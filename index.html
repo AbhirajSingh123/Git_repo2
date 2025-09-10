@@ -22,6 +22,7 @@
             --background-end-light: #e2e8f0;
             --background-start-dark: #0d1117;
             --background-end-dark: #161b22;
+            --accent-color: #38bdf8; /* Default: sky */
         }
 
         html {
@@ -67,26 +68,26 @@
         }
         
         .dark .aurora-background::before {
-            background: radial-gradient(circle, #582ab1, transparent 60%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 50%, #582ab1), transparent 60%);
             top: -20%;
             left: -20%;
         }
 
         .dark .aurora-background::after {
-            background: radial-gradient(circle, #2a7ab1, transparent 60%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 50%, #2a7ab1), transparent 60%);
             bottom: -20%;
             right: -20%;
             animation-delay: -12s;
         }
 
         .aurora-background::before {
-             background: radial-gradient(circle, #f687b3, transparent 60%);
+             background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 50%, #f687b3), transparent 60%);
              top: -20%;
              left: -20%;
         }
 
         .aurora-background::after {
-             background: radial-gradient(circle, #63b3ed, transparent 60%);
+             background: radial-gradient(circle, color-mix(in srgb, var(--accent-color) 50%, #63b3ed), transparent 60%);
              bottom: -20%;
              right: -20%;
              animation-delay: -12s;
@@ -163,9 +164,31 @@
         }
         .modern-input:focus, .modern-select:focus {
             outline: none;
-            border-color: #63b3ed;
-            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 30%, transparent);
         }
+        
+        /* Custom Scrollbar */
+        #sidebar-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        #sidebar-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #sidebar-content::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 3px;
+        }
+        #sidebar-content::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+        /* Accent Colors */
+        .accent-text { color: var(--accent-color); }
+        .accent-text-hover:hover { color: var(--accent-color); }
+        .accent-bg { background-color: color-mix(in srgb, var(--accent-color) 80%, black); }
+        .accent-bg-hover:hover { background-color: var(--accent-color); }
+
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
@@ -174,7 +197,7 @@
     <div class="relative min-h-screen lg:flex">
         <!-- Sidebar -->
         <aside id="sidebar" class="w-72 bg-white/5 dark:bg-black/10 backdrop-blur-3xl p-6 border-r border-white/10 fixed top-0 left-0 h-full z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
-            <div>
+            <div id="sidebar-content" class="flex-1 overflow-y-auto pr-2 -mr-2">
                 <div class="flex items-center gap-3 mb-6">
                     <img id="user-avatar-sidebar" class="w-12 h-12 rounded-full border-2 border-white/20" src="https://placehold.co/100x100/2d3748/718096?text=GH" alt="User Avatar">
                     <div>
@@ -185,20 +208,29 @@
                 <div id="user-stats" class="text-sm space-y-4">
                      <!-- User stats will be injected here -->
                 </div>
-                <a id="profile-link" href="#" target="_blank" rel="noopener noreferrer" class="mt-6 w-full block text-center bg-sky-500/80 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg transition-transform transform hover:scale-105">
+                <a id="profile-link" href="#" target="_blank" rel="noopener noreferrer" class="mt-6 w-full block text-center accent-bg accent-bg-hover text-white font-semibold py-2 px-4 rounded-lg transition-transform transform hover:scale-105">
                     View Profile
                 </a>
-            </div>
             
-            <!-- Top Languages Section -->
-            <div id="top-languages" class="mt-8 pt-6 border-t border-white/10">
-                <h3 class="font-semibold mb-4 text-white">Top Languages</h3>
-                <div id="languages-container" class="space-y-3">
-                    <!-- Languages will be injected here -->
+                <!-- Top Languages Section -->
+                <div id="top-languages" class="mt-8 pt-6 border-t border-white/10">
+                    <h3 class="font-semibold mb-4 text-white">Top Languages</h3>
+                    <div id="languages-container" class="space-y-3">
+                        <!-- Languages will be injected here -->
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-auto">
+            <div class="pt-6 border-t border-white/10">
+                 <div id="color-changer" class="mb-4">
+                    <h4 class="text-sm font-semibold text-gray-400 mb-2">Accent Color</h4>
+                    <div id="color-palette" class="flex gap-3">
+                        <button class="w-6 h-6 rounded-full bg-sky-500 transition ring-offset-2 ring-offset-slate-800" data-color="#38bdf8"></button>
+                        <button class="w-6 h-6 rounded-full bg-emerald-500 transition ring-offset-2 ring-offset-slate-800" data-color="#10b981"></button>
+                        <button class="w-6 h-6 rounded-full bg-rose-500 transition ring-offset-2 ring-offset-slate-800" data-color="#f43f5e"></button>
+                        <button class="w-6 h-6 rounded-full bg-amber-500 transition ring-offset-2 ring-offset-slate-800" data-color="#f59e0b"></button>
+                    </div>
+                </div>
                  <button id="theme-toggle" class="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/30 transition">
                     <i id="theme-toggle-icon" data-feather="moon"></i>
                     <span id="theme-toggle-text">Dark Mode</span>
@@ -254,7 +286,7 @@
             </div>
              <!-- Footer -->
             <footer class="text-center py-6 mt-8">
-                <p class="text-gray-400 text-sm">Built with Modern UI by Abhiraj Singh</p>
+                <p class="text-gray-400 text-sm">Built with Modern UI by Gemini</p>
             </footer>
         </main>
     </div>
@@ -275,6 +307,7 @@
             const themeText = document.getElementById('theme-toggle-text');
             const sidebar = document.getElementById('sidebar');
             const hamburgerBtn = document.getElementById('hamburger-btn');
+            const colorPalette = document.getElementById('color-palette');
 
             // State
             let allRepos = [];
@@ -294,13 +327,30 @@
                 feather.replace();
             };
 
+            const applyAccentColor = (color) => {
+                document.documentElement.style.setProperty('--accent-color', color);
+                localStorage.setItem('accentColor', color);
+                document.querySelectorAll('#color-palette button').forEach(btn => {
+                    btn.classList.toggle('ring-2', btn.dataset.color === color);
+                });
+            };
+
             const currentTheme = localStorage.getItem('theme') || 'dark';
             applyTheme(currentTheme);
+
+            const savedColor = localStorage.getItem('accentColor') || '#38bdf8';
+            applyAccentColor(savedColor);
 
             themeToggleBtn.addEventListener('click', () => {
                 const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
                 localStorage.setItem('theme', newTheme);
                 applyTheme(newTheme);
+            });
+
+            colorPalette.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON' && e.target.dataset.color) {
+                    applyAccentColor(e.target.dataset.color);
+                }
             });
             
             // --- Sidebar Toggle for Mobile ---
@@ -355,7 +405,7 @@
                     <div class="space-y-2 text-gray-400">
                         ${user.company ? `<div class="flex items-center gap-2"><i data-feather="briefcase" class="w-4 h-4"></i><span>${user.company}</span></div>` : ''}
                         ${user.location ? `<div class="flex items-center gap-2"><i data-feather="map-pin" class="w-4 h-4"></i><span>${user.location}</span></div>` : ''}
-                        ${user.blog ? `<div class="flex items-center gap-2"><i data-feather="link" class="w-4 h-4"></i><a href="${user.blog.startsWith('http') ? user.blog : `//${user.blog}`}" target="_blank" class="hover:text-sky-400">${user.blog}</a></div>` : ''}
+                        ${user.blog ? `<div class="flex items-center gap-2"><i data-feather="link" class="w-4 h-4"></i><a href="${user.blog.startsWith('http') ? user.blog : `//${user.blog}`}" target="_blank" class="accent-text-hover">${user.blog}</a></div>` : ''}
                     </div>
                     <div class="flex items-center gap-4 pt-2">
                         <div class="flex items-center gap-1 text-gray-400">
@@ -437,8 +487,8 @@
                     repoCard.innerHTML = `
                         <div>
                             <div class="flex justify-between items-start mb-3">
-                                <h3 class="text-lg font-bold text-sky-400 truncate">
-                                    <a href="${repo.html_url}" target="_blank" class="hover:underline">${repo.name}</a>
+                                <h3 class="text-lg font-bold truncate accent-text">
+                                    <a href="${repo.html_url}" target="_blank" class="accent-text-hover">${repo.name}</a>
                                 </h3>
                                 ${repo.language ? `<span class="px-2 py-1 bg-slate-700 text-slate-300 rounded-full text-xs font-semibold">${repo.language}</span>` : ''}
                             </div>
@@ -459,7 +509,7 @@
                                 <button class="copy-url-btn w-full bg-slate-700/80 hover:bg-slate-700 text-white py-2 px-3 rounded-lg text-sm transition" data-url="${repo.clone_url}">
                                     Copy URL
                                 </button>
-                                <a href="${repo.html_url}" target="_blank" class="w-full text-center bg-sky-500/80 hover:bg-sky-500 text-white py-2 px-3 rounded-lg text-sm transition">
+                                <a href="${repo.html_url}" target="_blank" class="view-repo-btn w-full text-center accent-bg accent-bg-hover text-white py-2 px-3 rounded-lg text-sm transition">
                                     View Repo
                                 </a>
                             </div>
@@ -467,7 +517,6 @@
                     repoGrid.appendChild(repoCard);
                 });
                 feather.replace();
-                document.querySelectorAll('.copy-url-btn').forEach(btn => btn.addEventListener('click', handleCopyClick));
             }
             
             // --- Event Handlers & Logic ---
@@ -492,13 +541,46 @@
                 filteredRepos.sort(sortFn[sortBy]);
                 renderRepos(filteredRepos);
             }
+            
+            function copyUrlFallback(url, button) {
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                textArea.style.position = 'fixed';
+                textArea.style.top = '-9999px';
+                textArea.style.left = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy URL'; }, 2000);
+                    } else {
+                         button.textContent = 'Copy Failed';
+                         setTimeout(() => { button.textContent = 'Copy URL'; }, 2000);
+                    }
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                    button.textContent = 'Copy Failed';
+                    setTimeout(() => { button.textContent = 'Copy URL'; }, 2000);
+                }
+                document.body.removeChild(textArea);
+            }
 
-            function handleCopyClick(e) {
-                const url = e.currentTarget.dataset.url;
-                navigator.clipboard.writeText(url).then(() => {
-                    e.currentTarget.textContent = 'Copied!';
-                    setTimeout(() => e.currentTarget.textContent = 'Copy URL', 2000);
-                }).catch(err => console.error('Copy failed', err));
+            function handleCopyClick(button) {
+                const url = button.dataset.url;
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy URL'; }, 2000);
+                    }).catch(err => {
+                        console.error('Modern copy failed, trying fallback:', err);
+                        copyUrlFallback(url, button);
+                    });
+                } else {
+                    copyUrlFallback(url, button);
+                }
             }
 
             // Card hover effect
@@ -514,6 +596,22 @@
             });
 
             // --- Initialization ---
+
+            // Event delegation for repo card buttons
+            repoGrid.addEventListener('click', (e) => {
+                const copyBtn = e.target.closest('.copy-url-btn');
+                if (copyBtn) {
+                    handleCopyClick(copyBtn);
+                    return; 
+                }
+
+                const viewBtn = e.target.closest('.view-repo-btn');
+                if (viewBtn) {
+                    e.preventDefault(); 
+                    window.open(viewBtn.href, '_blank');
+                }
+            });
+
             searchInput.addEventListener('input', applyFiltersAndSort);
             languageFilter.addEventListener('change', applyFiltersAndSort);
             sortOption.addEventListener('change', applyFiltersAndSort);
