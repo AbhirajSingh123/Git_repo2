@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Portfolio Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --background-start-light: #f7fafc;
+            --background-end-light: #e2e8f0;
+            --background-start-dark: #0d1117;
+            --background-end-dark: #161b22;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-start-light);
+            transition: background-color 0.5s ease;
+        }
+
+        .dark body {
+            background-color: var(--background-start-dark);
+        }
+
+        /* Modern Aurora Background */
+        .aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--background-start-light);
+        }
+
+        .dark .aurora-background {
+            background: var(--background-start-dark);
+        }
+
+        .aurora-background::before,
+        .aurora-background::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.3;
+            animation: moveAurora 25s infinite linear;
+        }
+        
+        .dark .aurora-background::before {
+            background: radial-gradient(circle, #582ab1, transparent 60%);
+            top: -20%;
+            left: -20%;
+        }
+
+        .dark .aurora-background::after {
+            background: radial-gradient(circle, #2a7ab1, transparent 60%);
+            bottom: -20%;
+            right: -20%;
+            animation-delay: -12s;
+        }
+
+        .aurora-background::before {
+             background: radial-gradient(circle, #f687b3, transparent 60%);
+             top: -20%;
+             left: -20%;
+        }
+
+        .aurora-background::after {
+             background: radial-gradient(circle, #63b3ed, transparent 60%);
+             bottom: -20%;
+             right: -20%;
+             animation-delay: -12s;
+        }
+
+        @keyframes moveAurora {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(40px, -60px) rotate(30deg); }
+            50% { transform: translate(-20px, 80px) rotate(-60deg); }
+            75% { transform: translate(-40px, -40px) rotate(10deg); }
+        }
+
+        /* Glassmorphism card with shimmering border */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.25);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.1), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Card enter animation */
+        @keyframes card-enter {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .card-enter-animation {
+            animation: card-enter 0.5s ease-out forwards;
+        }
+
+        /* Custom UI components */
+        .modern-input, .modern-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .dark .modern-input, .dark .modern-select {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .modern-input:focus, .modern-select:focus {
+            outline: none;
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="aurora-background"></div>
+
+    <div class="relative min-h-screen lg:flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-72 bg-white/5 dark:bg-black/10 backdrop-blur-3xl p-6 border-r border-white/10 fixed top-0 left-0 h-full z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <img id="user-avatar-sidebar" class="w-12 h-12 rounded-full border-2 border-white/20" src="https://placehold.co/100x100/2d3748/718096?text=GH" alt="User Avatar">
+                    <div>
+                        <h2 id="user-name-sidebar" class="font-bold text-lg">GitHub User</h2>
+                        <p id="user-login-sidebar" class="text-sm text-gray-400">@username</p>
+                    </div>
+                </div>
+                <div id="user-stats" class="text-sm space-y-4">
+                     <!-- User stats will be injected here -->
+                </div>
+                <a id="profile-link" href="#" target="_blank" rel="noopener noreferrer" class="mt-6 w-full block text-center bg-sky-500/80 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg transition-transform transform hover:scale-105">
+                    View Profile
+                </a>
+            </div>
+            
+            <!-- Top Languages Section -->
+            <div id="top-languages" class="mt-8 pt-6 border-t border-white/10">
+                <h3 class="font-semibold mb-4 text-white">Top Languages</h3>
+                <div id="languages-container" class="space-y-3">
+                    <!-- Languages will be injected here -->
+                </div>
+            </div>
+
+            <div class="mt-auto">
+                 <button id="theme-toggle" class="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-white/10 hover:bg-white/20 dark:bg-black/20 dark:hover:bg-black/30 transition">
+                    <i id="theme-toggle-icon" data-feather="moon"></i>
+                    <span id="theme-toggle-text">Dark Mode</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 lg:ml-72">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-white">My Repositories</h1>
+                <button id="hamburger-btn" class="p-2 z-50">
+                    <i data-feather="menu" class="text-white"></i>
+                </button>
+            </div>
+
+            <div id="app" class="max-w-7xl mx-auto">
+                <!-- Header Section -->
+                <header class="hidden lg:block mb-8">
+                    <h1 class="text-4xl font-bold text-white mb-2">My Repositories</h1>
+                    <p class="text-gray-400">An interactive showcase of my public projects.</p>
+                </header>
+
+                <!-- Controls Section -->
+                <div class="glass-card rounded-xl p-4 mb-8 sticky top-4 z-10 flex flex-col md:flex-row gap-4 items-center">
+                    <div class="relative w-full md:flex-1">
+                        <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="Search repositories..." class="modern-input w-full rounded-lg py-2 pl-10 pr-4">
+                    </div>
+                    <div class="flex gap-4 w-full md:w-auto">
+                        <select id="languageFilter" class="modern-select rounded-lg py-2 px-4 w-full md:w-auto">
+                            <option value="">All Languages</option>
+                        </select>
+                        <select id="sortOption" class="modern-select rounded-lg py-2 px-4 w-full md:w-auto">
+                            <option value="stars">Sort by Stars</option>
+                            <option value="name">Sort by Name</option>
+                            <option value="updated">Sort by Updated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Repositories Grid -->
+                <div id="repoGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div id="loading" class="col-span-full text-center py-10">
+                        <p class="text-xl text-white">Fetching repositories...</p>
+                    </div>
+                </div>
+                
+                <div id="error" class="hidden col-span-full text-center py-10 glass-card rounded-xl">
+                    <p class="text-xl text-red-400">Could not fetch repositories.</p>
+                </div>
+            </div>
+             <!-- Footer -->
+            <footer class="text-center py-6 mt-8">
+                <p class="text-gray-400 text-sm">Built with Modern UI by Abhiraj Singh</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const GITHUB_USERNAME = 'AbhirajSingh123';
+
+            // DOM Elements
+            const repoGrid = document.getElementById('repoGrid');
+            const searchInput = document.getElementById('searchInput');
+            const languageFilter = document.getElementById('languageFilter');
+            const sortOption = document.getElementById('sortOption');
+            const loadingIndicator = document.getElementById('loading');
+            const errorIndicator = document.getElementById('error');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-toggle-icon');
+            const themeText = document.getElementById('theme-toggle-text');
+            const sidebar = document.getElementById('sidebar');
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+
+            // State
+            let allRepos = [];
+            let languages = new Set();
+            
+            // --- Theme Management ---
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    themeIcon.setAttribute('data-feather', 'sun');
+                    themeText.textContent = 'Light Mode';
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    themeIcon.setAttribute('data-feather', 'moon');
+                    themeText.textContent = 'Dark Mode';
+                }
+                feather.replace();
+            };
+
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(currentTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+            
+            // --- Sidebar Toggle for Mobile ---
+            hamburgerBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            // --- API Fetching ---
+            async function fetchGitHubData() {
+                try {
+                    const [userRes, repoRes] = await Promise.all([
+                        fetch(`https://api.github.com/users/${GITHUB_USERNAME}`),
+                        fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=pushed`)
+                    ]);
+
+                    if (!userRes.ok || !repoRes.ok) {
+                        throw new Error('Failed to fetch data from GitHub API');
+                    }
+
+                    const userData = await userRes.json();
+                    const repoData = await repoRes.json();
+                    
+                    allRepos = repoData.filter(repo => !repo.fork);
+                    allRepos.forEach(repo => {
+                        if (repo.language) {
+                            languages.add(repo.language);
+                        }
+                    });
+
+                    updateUserInfo(userData);
+                    calculateTopLanguages(allRepos);
+                    populateLanguageFilter();
+                    applyFiltersAndSort();
+                    loadingIndicator.style.display = 'none';
+                } catch (e) {
+                    console.error("Failed to fetch GitHub data:", e);
+                    loadingIndicator.style.display = 'none';
+                    errorIndicator.style.display = 'block';
+                }
+            }
+
+            // --- UI Rendering ---
+            function updateUserInfo(user) {
+                document.getElementById('user-avatar-sidebar').src = user.avatar_url;
+                document.getElementById('user-name-sidebar').textContent = user.name || user.login;
+                document.getElementById('user-login-sidebar').textContent = `@${user.login}`;
+                document.getElementById('profile-link').href = user.html_url;
+
+                const userStats = document.getElementById('user-stats');
+                userStats.innerHTML = `
+                    <p class="text-gray-300">${user.bio || 'No bio available.'}</p>
+                    <div class="space-y-2 text-gray-400">
+                        ${user.company ? `<div class="flex items-center gap-2"><i data-feather="briefcase" class="w-4 h-4"></i><span>${user.company}</span></div>` : ''}
+                        ${user.location ? `<div class="flex items-center gap-2"><i data-feather="map-pin" class="w-4 h-4"></i><span>${user.location}</span></div>` : ''}
+                        ${user.blog ? `<div class="flex items-center gap-2"><i data-feather="link" class="w-4 h-4"></i><a href="${user.blog.startsWith('http') ? user.blog : `//${user.blog}`}" target="_blank" class="hover:text-sky-400">${user.blog}</a></div>` : ''}
+                    </div>
+                    <div class="flex items-center gap-4 pt-2">
+                        <div class="flex items-center gap-1 text-gray-400">
+                            <i data-feather="users" class="w-4 h-4"></i>
+                            <span class="font-semibold text-white">${user.followers}</span> followers
+                        </div>
+                        <div class="flex items-center gap-1 text-gray-400">
+                            <span class="font-semibold text-white">${user.following}</span> following
+                        </div>
+                    </div>
+                     <div class="flex items-center gap-1 text-gray-400 pt-2 border-t border-white/10">
+                        <i data-feather="folder" class="w-4 h-4"></i>
+                        <span class="font-semibold text-white">${user.public_repos}</span> public repositories
+                    </div>
+                `;
+                feather.replace();
+            }
+
+            function calculateTopLanguages(repos) {
+                const langCount = repos.reduce((acc, repo) => {
+                    if (repo.language) {
+                        acc[repo.language] = (acc[repo.language] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
+
+                const totalReposWithLang = Object.values(langCount).reduce((sum, count) => sum + count, 0);
+                
+                const topLangs = Object.entries(langCount)
+                    .sort(([, countA], [, countB]) => countB - countA)
+                    .slice(0, 5);
+                
+                const languagesContainer = document.getElementById('languages-container');
+                if(topLangs.length === 0){
+                    languagesContainer.innerHTML = '<p class="text-sm text-gray-400">No language data available.</p>';
+                    return;
+                }
+
+                const colors = ['bg-sky-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-indigo-500'];
+
+                languagesContainer.innerHTML = topLangs.map(([lang, count], index) => {
+                    const percentage = totalReposWithLang > 0 ? ((count / totalReposWithLang) * 100).toFixed(1) : 0;
+                    return `
+                        <div>
+                            <div class="flex justify-between text-sm mb-1 text-gray-300">
+                                <span>${lang}</span>
+                                <span>${percentage}%</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-1.5">
+                                <div class="${colors[index % colors.length]} h-1.5 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function populateLanguageFilter() {
+                const sortedLangs = Array.from(languages).sort();
+                sortedLangs.forEach(lang => {
+                    languageFilter.add(new Option(lang, lang));
+                });
+            }
+
+            function renderRepos(repos) {
+                repoGrid.innerHTML = '';
+                if (repos.length === 0) {
+                    repoGrid.innerHTML = `<div class="col-span-full text-center py-10 glass-card rounded-xl"><p class="text-xl">No repositories found.</p></div>`;
+                    return;
+                }
+
+                repos.forEach((repo, index) => {
+                    const repoCard = document.createElement('div');
+                    repoCard.className = 'glass-card rounded-xl p-6 flex flex-col justify-between card-enter-animation';
+                    repoCard.style.setProperty('--animation-delay', `${index * 50}ms`);
+                    
+                    const description = repo.description ? repo.description.slice(0, 120) + (repo.description.length > 120 ? '...' : '') : 'No description.';
+                    const updatedDate = new Date(repo.updated_at).toLocaleDateString();
+
+                    repoCard.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-bold text-sky-400 truncate">
+                                    <a href="${repo.html_url}" target="_blank" class="hover:underline">${repo.name}</a>
+                                </h3>
+                                ${repo.language ? `<span class="px-2 py-1 bg-slate-700 text-slate-300 rounded-full text-xs font-semibold">${repo.language}</span>` : ''}
+                            </div>
+                            <p class="text-gray-400 text-sm mb-4 h-16">${description}</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                ${repo.topics.map(topic => `<span class="px-2 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">${topic}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                             <div class="flex items-center justify-between text-sm text-gray-400 mb-4 pt-4 border-t border-white/10">
+                                <div class="flex items-center gap-4">
+                                    <span class="flex items-center gap-1"><i data-feather="star" class="w-4 h-4 text-yellow-400"></i>${repo.stargazers_count}</span>
+                                    <span class="flex items-center gap-1"><i data-feather="git-branch" class="w-4 h-4 text-green-400"></i>${repo.forks_count}</span>
+                                </div>
+                                <span class="text-xs">Updated: ${updatedDate}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="copy-url-btn w-full bg-slate-700/80 hover:bg-slate-700 text-white py-2 px-3 rounded-lg text-sm transition" data-url="${repo.clone_url}">
+                                    Copy URL
+                                </button>
+                                <a href="${repo.html_url}" target="_blank" class="w-full text-center bg-sky-500/80 hover:bg-sky-500 text-white py-2 px-3 rounded-lg text-sm transition">
+                                    View Repo
+                                </a>
+                            </div>
+                        </div>`;
+                    repoGrid.appendChild(repoCard);
+                });
+                feather.replace();
+                document.querySelectorAll('.copy-url-btn').forEach(btn => btn.addEventListener('click', handleCopyClick));
+            }
+            
+            // --- Event Handlers & Logic ---
+            function applyFiltersAndSort() {
+                let filteredRepos = [...allRepos];
+                const searchTerm = searchInput.value.toLowerCase();
+                const lang = languageFilter.value;
+                const sortBy = sortOption.value;
+
+                if (searchTerm) {
+                    filteredRepos = filteredRepos.filter(r => r.name.toLowerCase().includes(searchTerm) || (r.description && r.description.toLowerCase().includes(searchTerm)));
+                }
+                if (lang) {
+                    filteredRepos = filteredRepos.filter(r => r.language === lang);
+                }
+
+                const sortFn = {
+                    'stars': (a, b) => b.stargazers_count - a.stargazers_count,
+                    'name': (a, b) => a.name.localeCompare(b.name),
+                    'updated': (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+                };
+                filteredRepos.sort(sortFn[sortBy]);
+                renderRepos(filteredRepos);
+            }
+
+            function handleCopyClick(e) {
+                const url = e.currentTarget.dataset.url;
+                navigator.clipboard.writeText(url).then(() => {
+                    e.currentTarget.textContent = 'Copied!';
+                    setTimeout(() => e.currentTarget.textContent = 'Copy URL', 2000);
+                }).catch(err => console.error('Copy failed', err));
+            }
+
+            // Card hover effect
+            document.getElementById('repoGrid').addEventListener('mousemove', e => {
+                const card = e.target.closest('.glass-card');
+                if (card) {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                }
+            });
+
+            // --- Initialization ---
+            searchInput.addEventListener('input', applyFiltersAndSort);
+            languageFilter.addEventListener('change', applyFiltersAndSort);
+            sortOption.addEventListener('change', applyFiltersAndSort);
+            
+            fetchGitHubData();
+            feather.replace();
+        });
+    </script>
+</body>
+</html>
+
